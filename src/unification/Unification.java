@@ -1,4 +1,5 @@
 package unification;
+import function.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
