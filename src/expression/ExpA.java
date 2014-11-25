@@ -1,4 +1,5 @@
-package clauseForm;
+package expression;
+
 
 public class ExpA extends Expression {
 	private Expression expression1;

@@ -1,4 +1,4 @@
-package clauseForm;
+package expression;
 
 public enum Operators {
 	AND,

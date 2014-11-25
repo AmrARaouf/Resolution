@@ -1,4 +1,5 @@
-package clauseForm;
+package expression;
+
 
 public abstract class Expression {
 	Quantifier quantifier;

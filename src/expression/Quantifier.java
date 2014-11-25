@@ -1,4 +1,4 @@
-package clauseForm;
+package expression;
 import function.Literal;
 
 public class Quantifier {
