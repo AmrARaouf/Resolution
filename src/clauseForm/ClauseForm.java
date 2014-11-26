@@ -38,17 +38,17 @@ public class ClauseForm {
 						false,
 						((ExpA) expression).expression1,
 						((ExpA) expression).expression2, Operators.IMPLIES);
-				exp1 = (ExpA) elimEquivalence(exp1);
 				Expression exp2 = new ExpA(
 						null,
 						false,
 						((ExpA) expression).expression2,
 						((ExpA) expression).expression1, Operators.IMPLIES);
-				exp2 = elimEquivalence(exp2);
 				ExpA exp = new ExpA(expression.quantifier,
 						expression.isNegated, exp1, exp2, Operators.AND);
 				expression = exp;
 			}
+			((ExpA) expression).expression1 = elimEquivalence(((ExpA) expression).expression1);
+			((ExpA) expression).expression2 = elimEquivalence(((ExpA) expression).expression2);
 		}
 		return expression;
 	}
@@ -102,11 +102,11 @@ public class ClauseForm {
 		function2.addParameter(new Literal("a"));
 		ExpB e2 = new ExpB(q2, false, function2);
 		ExpA e = new ExpA(q, false, e1, e2, Operators.EQUIVILANT);
-		System.out.println(e.toString());
-		
+		ExpA e3 = new ExpA(q, false, e, e, Operators.EQUIVILANT);
+		System.out.println(e3.toString());
 		ClauseForm cf = new ClauseForm();
-		e = (ExpA) cf.elimEquivalence(e);
-		System.out.println(e.toString());
+		e3 = (ExpA) cf.elimEquivalence(e3);
+		System.out.println(e3.toString());
 		
 	}
 
