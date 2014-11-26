@@ -100,11 +100,13 @@ public class ClauseForm {
 	
 
 	public static void main(String[] args) {
-		Function f = new Function("Q");
-		ExpB e1 = new ExpB(null, false, f);
-		ExpB e2 = new ExpB(null, false, f);
+		Function f1 = new Function("Q");
+		Function f2 = new Function("P");
+		ExpB e1 = new ExpB(null, false, f1);
+		ExpB e2 = new ExpB(null, false, f2);
 		ExpA e3 = new ExpA(null, false, e1, e2, Operators.IMPLIES);
-		ExpA exp = new ExpA(null, false, e3, e3, Operators.IMPLIES);
+		ExpA e4 = new ExpA(null,false,new ExpB(null,false,new Function("A")),new ExpB(null,false,new Function("B")),Operators.IMPLIES);
+		ExpA exp = new ExpA(null, false, e3, e4, Operators.IMPLIES);
 		System.out.println(exp.toString());
 		
 		ClauseForm cf = new ClauseForm();
