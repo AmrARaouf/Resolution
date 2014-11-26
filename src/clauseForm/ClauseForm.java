@@ -54,7 +54,16 @@ public class ClauseForm {
 	}
 
 	public Expression elimImplication(Expression expression) {
-		return null;
+		if (expression instanceof ExpA) {
+			expression = (ExpA) expression;
+			if (((ExpA) expression).operator == Operators.IMPLIES) {
+				((ExpA) expression).operator = Operators.AND;
+				((ExpA) expression).expression1.reverseNegation();
+			}
+			((ExpA) expression).expression1 = elimImplication(((ExpA) expression).expression1);
+			((ExpA) expression).expression2 = elimImplication(((ExpA) expression).expression2);
+		}
+		return expression;
 	}
 
 	public Expression pushNotInwards(Expression expression) {
@@ -91,23 +100,18 @@ public class ClauseForm {
 	
 
 	public static void main(String[] args) {
-		Literal[] l = new Literal[1];
-		l[0] = new Literal("a");
-		Quantifier q = new Quantifier('A', l);
-		Quantifier q2 = new Quantifier('E', l);
-		Function function1 = new Function("Q");
-		function1.addParameter(new Literal("x"));
-		ExpB e1 = new ExpB(null, true, function1);
-		Function function2 = new Function("P");
-		function2.addParameter(new Literal("a"));
-		ExpB e2 = new ExpB(q2, false, function2);
-		ExpA e = new ExpA(q, false, e1, e2, Operators.EQUIVILANT);
-		ExpA e3 = new ExpA(q, false, e, e, Operators.EQUIVILANT);
-		System.out.println(e3.toString());
-		ClauseForm cf = new ClauseForm();
-		e3 = (ExpA) cf.elimEquivalence(e3);
-		System.out.println(e3.toString());
+		Function f = new Function("Q");
+		ExpB e1 = new ExpB(null, false, f);
+		ExpB e2 = new ExpB(null, false, f);
+		ExpA e3 = new ExpA(null, false, e1, e2, Operators.IMPLIES);
+		ExpA exp = new ExpA(null, false, e3, e3, Operators.IMPLIES);
+		System.out.println(exp.toString());
 		
+		ClauseForm cf = new ClauseForm();
+		exp = (ExpA) cf.elimEquivalence(exp);
+		System.out.println(exp);
+		exp = (ExpA) cf.elimImplication(exp);
+		System.out.println(exp);
 	}
 
 }
