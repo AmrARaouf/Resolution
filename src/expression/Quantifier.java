@@ -27,7 +27,10 @@ public class Quantifier {
 	}
 	
 	public String toString() {
-		// TODO: print quantifier nicely
-		return null;
+		String s = (type == 'A')? (char)8704 + "":(char)8707 + "";
+		for (int i = 0; i < literals.length; i++) {
+			s+= literals[i].name + ",";
+		}
+		return s.substring(0,s.length() - 1);
 	}
 }

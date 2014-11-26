@@ -19,8 +19,11 @@ public class ExpB extends Expression {
 	
 	@Override
 	public String toString() {
-		// TODO: pretty print
-		return null;
+		String s = (isNegated)? (char)172 + "" : "";
+		if (quantifier != null)
+			s += quantifier.toString() + ".";
+		s += function.toString();
+		return s;
 	}
 	
 }

@@ -1,5 +1,5 @@
 package expression;
-
+import function.*;
 
 public class ExpA extends Expression {
 	private Expression expression1;
@@ -34,7 +34,37 @@ public class ExpA extends Expression {
 	
 	@Override
 	public String toString() {
-		// TODO: pretty print
-		return null;
+		String s = (isNegated)? (char)172 + "" : "";
+		if (quantifier != null)
+			s += quantifier.toString();
+		s += "(";
+		s += expression1.toString() + " ";
+		switch (operator) {
+			case AND:
+				s += (char)8743; break;
+			case OR:
+				s += (char)8744; break;
+			case EQUIVILANT:
+				s += "<=>"; break;
+			case IMPLIES:
+				s += "=>"; break;
+		}
+		s += " " + expression2.toString() + ")";
+		return s;
+	}
+	
+	public static void main(String[] args) {
+		Literal[] l = new Literal[1];
+		l[0] = new Literal("a");
+		Quantifier q = new Quantifier('A', l);
+		Quantifier q2 = new Quantifier('E', l);
+		Function function1 = new Function("Q");
+		function1.addParameter(new Literal("x"));
+		ExpB e1 = new ExpB(null, true, function1);
+		Function function2 = new Function("P");
+		function2.addParameter(new Literal("a"));
+		ExpB e2 = new ExpB(q2, false, function2);
+		ExpA e = new ExpA(q, false, e1, e2, Operators.IMPLIES);
+		System.out.println(e.toString());
 	}
 }
