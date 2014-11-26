@@ -2,7 +2,7 @@ package expression;
 import function.Function;
 
 public class ExpB extends Expression {
-	private Function function;
+	public Function function;
 	
 	public ExpB(Quantifier quantifier, boolean isNegated, Function function) {
 		super(quantifier, isNegated);

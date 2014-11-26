@@ -2,9 +2,9 @@ package expression;
 import function.*;
 
 public class ExpA extends Expression {
-	private Expression expression1;
-	private Expression expression2;
-	private Operators operator;
+	public Expression expression1;
+	public Expression expression2;
+	public Operators operator;
 	
 	public ExpA(Quantifier quantifier, boolean isNegated, Expression expression1, Expression expression2, Operators operator) {
 		super(quantifier, isNegated);
@@ -64,7 +64,7 @@ public class ExpA extends Expression {
 		Function function2 = new Function("P");
 		function2.addParameter(new Literal("a"));
 		ExpB e2 = new ExpB(q2, false, function2);
-		ExpA e = new ExpA(q, false, e1, e2, Operators.IMPLIES);
+		ExpA e = new ExpA(q, false, e1, e2, Operators.EQUIVILANT);
 		System.out.println(e.toString());
 	}
 }

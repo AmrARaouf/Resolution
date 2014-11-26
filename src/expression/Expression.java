@@ -2,8 +2,8 @@ package expression;
 
 
 public abstract class Expression {
-	Quantifier quantifier;
-	boolean isNegated;
+	public Quantifier quantifier;
+	public boolean isNegated;
 	
 	public Expression(Quantifier quantifier, boolean isNegated) {
 		this.quantifier = quantifier;
@@ -12,4 +12,21 @@ public abstract class Expression {
 	
 	@Override
 	public abstract String toString();
+
+	public Quantifier getQuantifier() {
+		return quantifier;
+	}
+
+	public void setQuantifier(Quantifier quantifier) {
+		this.quantifier = quantifier;
+	}
+
+	public boolean isNegated() {
+		return isNegated;
+	}
+
+	public void setNegated(boolean isNegated) {
+		this.isNegated = isNegated;
+	}
+	
 }
