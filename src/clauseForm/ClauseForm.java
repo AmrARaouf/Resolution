@@ -5,9 +5,9 @@ import function.Function;
 import function.Literal;
 
 public class ClauseForm {
-	
+
 	public ClauseForm() {
-		
+
 	}
 
 	public Expression toExpression(String s) {
@@ -33,14 +33,10 @@ public class ClauseForm {
 		if (expression instanceof ExpA) {
 			expression = (ExpA) expression;
 			if (((ExpA) expression).operator == Operators.EQUIVILANT) {
-				ExpA exp1 = new ExpA(
-						null,
-						false,
+				ExpA exp1 = new ExpA(null, false,
 						((ExpA) expression).expression1,
 						((ExpA) expression).expression2, Operators.IMPLIES);
-				Expression exp2 = new ExpA(
-						null,
-						false,
+				Expression exp2 = new ExpA(null, false,
 						((ExpA) expression).expression2,
 						((ExpA) expression).expression1, Operators.IMPLIES);
 				ExpA exp = new ExpA(expression.quantifier,
@@ -75,7 +71,7 @@ public class ClauseForm {
 	}
 
 	public Expression skolemize(Expression expression) {
-		return null;		
+		return null;
 	}
 
 	public Expression discardAQuantifiers(Expression expression) {
@@ -97,7 +93,6 @@ public class ClauseForm {
 	public String renameClauseVariables(String expression) {
 		return null;
 	}
-	
 
 	public static void main(String[] args) {
 		Function f1 = new Function("Q");
@@ -105,14 +100,16 @@ public class ClauseForm {
 		ExpB e1 = new ExpB(null, false, f1);
 		ExpB e2 = new ExpB(null, false, f2);
 		ExpA e3 = new ExpA(null, false, e1, e2, Operators.IMPLIES);
-		ExpA e4 = new ExpA(null,false,new ExpB(null,false,new Function("A")),new ExpB(null,false,new Function("B")),Operators.IMPLIES);
+		ExpA e4 = new ExpA(null, false,
+				new ExpB(null, false, new Function("A")), new ExpB(null, false,
+						new Function("B")), Operators.IMPLIES);
 		ExpA exp = new ExpA(null, false, e3, e4, Operators.IMPLIES);
 		System.out.println(exp.toString());
-		
+
 		ClauseForm cf = new ClauseForm();
 		exp = (ExpA) cf.elimEquivalence(exp);
 		System.out.println(exp);
-		exp = (ExpA) cf.elimImplication(exp);
+		cf.elimImplication(exp);
 		System.out.println(exp);
 	}
 
