@@ -50,4 +50,8 @@ public abstract class Expression {
 		this.isNegated = isNegated;
 	}
 	
+	public void reverseNegation() {
+		isNegated = !isNegated;
+	}
+	
 }
