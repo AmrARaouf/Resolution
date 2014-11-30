@@ -3,10 +3,12 @@ import function.Literal;
 
 public class Quantifier {
 	char type;
+	boolean isNegated;
 	Literal[] literals;
 	
-	public Quantifier(char type, Literal[] literals) {
+	public Quantifier(char type, boolean isNegated, Literal[] literals) {
 		this.type = type;
+		this.isNegated = isNegated;
 		this.literals = literals;
 	}
 
@@ -27,7 +29,11 @@ public class Quantifier {
 	}
 	
 	public String toString() {
-		String s = (type == 'A')? (char)8704 + "":(char)8707 + "";
+		String s = "";
+		if (isNegated) {
+			s += (char)172 + "";
+		}
+		s += (type == 'A')? (char)8704 + "":(char)8707 + "";
 		for (int i = 0; i < literals.length; i++) {
 			s+= literals[i].name + ",";
 		}

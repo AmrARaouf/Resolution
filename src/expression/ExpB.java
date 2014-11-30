@@ -1,5 +1,6 @@
 package expression;
 import function.Function;
+import function.Literal;
 
 public class ExpB extends Expression {
 	public Function function;
@@ -19,10 +20,12 @@ public class ExpB extends Expression {
 	
 	@Override
 	public String toString() {
-		String s = (isNegated)? (char)172 + "" : "";
+		String s = "";
 		if (quantifier != null)
 			s += quantifier.toString() + ".";
+		s += (isNegated)? (char)172 + "(" : "";
 		s += function.toString();
+		s += (isNegated)? ")" : "";
 		return s;
 	}
 	

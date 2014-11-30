@@ -4,6 +4,7 @@ package expression;
 public abstract class Expression {
 	public Quantifier quantifier;
 	public boolean isNegated;
+	public Expression parent;
 	
 	public Expression(Quantifier quantifier, boolean isNegated) {
 		this.quantifier = quantifier;
@@ -31,6 +32,10 @@ public abstract class Expression {
 	
 	public void reverseNegation() {
 		isNegated = !isNegated;
+	}
+	
+	public void setParentExpression(Expression expression) {
+		this.parent = expression;
 	}
 	
 }
