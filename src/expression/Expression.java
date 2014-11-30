@@ -10,6 +10,27 @@ public abstract class Expression {
 		this.isNegated = isNegated;
 	}
 	
+	public static Expression parse(String expr) {
+		if (expr.equals("")) {
+			return null;
+		}
+		Quantifier quantifier = null;
+		boolean isNegated = false;
+		if (isQuantifier(expr.charAt(0))) {
+			int index = 1;
+			String s = "";
+			do {
+				while(index < expr.length() && Character.isLetter(expr.charAt(index))) {
+					s += expr.charAt(index++);
+				}
+			} while (index < expr.length() && expr.charAt(index++) == ',');
+		}
+	}
+	
+	private static boolean isQuantifier(char c) {
+		return c == ((char)8704) || c == ((char)8707);
+	}
+
 	@Override
 	public abstract String toString();
 

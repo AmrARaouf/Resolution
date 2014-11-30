@@ -1,11 +1,13 @@
 package expression;
+import java.util.ArrayList;
+
 import function.Literal;
 
 public class Quantifier {
 	char type;
-	Literal[] literals;
+	ArrayList<Literal> literals;
 	
-	public Quantifier(char type, Literal[] literals) {
+	public Quantifier(char type, ArrayList<Literal> literals) {
 		this.type = type;
 		this.literals = literals;
 	}
@@ -18,18 +20,18 @@ public class Quantifier {
 		this.type = type;
 	}
 
-	public Literal[] getLiterals() {
+	public ArrayList<Literal> getLiterals() {
 		return literals;
 	}
 
-	public void setLiterals(Literal[] literals) {
+	public void setLiterals(ArrayList<Literal> literals) {
 		this.literals = literals;
 	}
 	
 	public String toString() {
 		String s = (type == 'A')? (char)8704 + "":(char)8707 + "";
-		for (int i = 0; i < literals.length; i++) {
-			s+= literals[i].name + ",";
+		for (int i = 0; i < literals.size(); i++) {
+			s+= literals.get(i).name + ",";
 		}
 		return s.substring(0,s.length() - 1);
 	}
