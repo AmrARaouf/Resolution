@@ -18,6 +18,8 @@ public class Main {
 		System.out.println("===================================================");
 		u.unify("f(x,g(x),x)", "f(g(u),g(g(z)),z)");
 		System.out.println("===================================================");
+//		/String s = "∃x[P (x) ∧ ∀x[Q(x) ⇒ ¬P (x)]]";
+		System.out.println("∃x[P (x) ∧ ∀x[Q(x) ⇒ ¬P (x)]]");
 	}
 
 }
