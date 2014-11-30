@@ -1,4 +1,5 @@
 import unification.Unification;
+import expression.Expression;
 import function.Var;
 
 public class Main {
@@ -18,8 +19,10 @@ public class Main {
 		System.out.println("===================================================");
 		u.unify("f(x,g(x),x)", "f(g(u),g(g(z)),z)");
 		System.out.println("===================================================");
-//		/String s = "∃x[P (x) ∧ ∀x[Q(x) ⇒ ¬P (x)]]";
-		System.out.println("∃x[P (x) ∧ ∀x[Q(x) ⇒ ¬P (x)]]");
+		//String s = "∃x[P(x)∧∀x[Q(x)⇒¬P(x)]]";
+		String s = "∀x[P(x)⇔(Q(x)∧∃y[Q(y)∧R(y,x)])]";
+		Expression e = Expression.parse(s);
+		System.out.println(e.toString());
 	}
 
 }

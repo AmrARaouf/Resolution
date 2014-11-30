@@ -2,8 +2,6 @@ package expression;
 
 import java.util.ArrayList;
 
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Operators;
-
 import function.Function;
 import function.Literal;
 
@@ -11,6 +9,7 @@ import function.Literal;
 public abstract class Expression {
 	public Quantifier quantifier;
 	public boolean isNegated;
+	public Expression parent;
 	
 	public Expression(Quantifier quantifier, boolean isNegated) {
 		this.quantifier = quantifier;
@@ -18,12 +17,17 @@ public abstract class Expression {
 	}
 	
 	public static Expression parse(String expr) {
+		//System.out.println(expr);
 		if (expr.equals("")) {
 			return null;
 		}
 		int start = 0, end = expr.length();
 		Quantifier quantifier = null;
 		boolean isNegated = false, isQuantifierNegated = false;
+		if (expr.charAt(0) == '(' || expr.charAt(0) == '[' ) {
+			start++;
+			end--;
+		}
 		if (isNot(expr.charAt(start))) {
 			if (isQuantifier(expr.charAt(start + 1))) {
 				isQuantifierNegated = true;
@@ -33,16 +37,17 @@ public abstract class Expression {
 			start++;
 		}
 		if (isQuantifier(expr.charAt(start))) {
-			int index = start + 1;
+			int index = start;
 			ArrayList<Literal> literals = new ArrayList<>();
 			String s = "";
 			do {
+				index++;
 				while(index < end && Character.isLetter(expr.charAt(index))) {
 					s += expr.charAt(index++);
 				}
 				literals.add(new Literal(s));
-			} while (index < end && expr.charAt(index++) == ',');
-			quantifier = new Quantifier(expr.charAt(start), literals);
+			} while (index < end && expr.charAt(index) == ',');
+			quantifier = new Quantifier(expr.charAt(start) == '∀'? 'A' : 'E', isQuantifierNegated, literals);
 			start = index + 1;
 			end--;
 		}
@@ -74,7 +79,7 @@ public abstract class Expression {
 		if (e1 == end) {
 			return new ExpB(quantifier, isNegated, (Function)Function.parse(expr.substring(s1, e1)));
 		} else {
-			start++;
+			start = e1;
 			expression.Operators op = parseOperator(expr.charAt(start));
 			start++;
 			index = start;
@@ -143,6 +148,10 @@ public abstract class Expression {
 	
 	public void reverseNegation() {
 		isNegated = !isNegated;
+	}
+	
+	public void setParentExpression(Expression expression) {
+		this.parent = expression;
 	}
 	
 }

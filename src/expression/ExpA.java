@@ -34,9 +34,10 @@ public class ExpA extends Expression {
 	
 	@Override
 	public String toString() {
-		String s = (isNegated)? (char)172 + "" : "";
+		String s = "";
 		if (quantifier != null)
 			s += quantifier.toString();
+		s += (isNegated)? (char)172 : "";
 		s += "(";
 		s += expression1.toString() + " ";
 		switch (operator) {
@@ -50,14 +51,15 @@ public class ExpA extends Expression {
 				s += "=>"; break;
 		}
 		s += " " + expression2.toString() + ")";
+		s += (isNegated)? ")" : "";
 		return s;
 	}
 	
 	public static void main(String[] args) {
-		Literal[] l = new Literal[1];
+		/*Literal[] l = new Literal[1];
 		l[0] = new Literal("a");
-		Quantifier q = new Quantifier('A', l);
-		Quantifier q2 = new Quantifier('E', l);
+		Quantifier q = new Quantifier('A', true, l);
+		Quantifier q2 = new Quantifier('E', false, l);
 		Function function1 = new Function("Q");
 		function1.addParameter(new Literal("x"));
 		ExpB e1 = new ExpB(null, true, function1);
@@ -65,6 +67,6 @@ public class ExpA extends Expression {
 		function2.addParameter(new Literal("a"));
 		ExpB e2 = new ExpB(q2, false, function2);
 		ExpA e = new ExpA(q, false, e1, e2, Operators.EQUIVILANT);
-		System.out.println(e.toString());
+		System.out.println(e.toString());*/
 	}
 }
