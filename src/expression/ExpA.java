@@ -9,7 +9,9 @@ public class ExpA extends Expression {
 	public ExpA(Quantifier quantifier, boolean isNegated, Expression expression1, Expression expression2, Operators operator) {
 		super(quantifier, isNegated);
 		this.expression1 = expression1;
+		this.expression1.setParentExpression(this);
 		this.expression2 = expression2;
+		this.expression2.setParentExpression(this);
 		this.operator = operator;
 	}
 	

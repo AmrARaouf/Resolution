@@ -1,5 +1,7 @@
 package clauseForm;
 
+import java.util.ArrayList;
+
 import expression.*;
 import function.Function;
 import function.Literal;
@@ -43,8 +45,8 @@ public class ClauseForm {
 						expression.isNegated, exp1, exp2, Operators.AND);
 				expression = exp;
 			}
-			((ExpA) expression).expression1 = elimEquivalence(((ExpA) expression).expression1);
-			((ExpA) expression).expression2 = elimEquivalence(((ExpA) expression).expression2);
+			elimEquivalence(((ExpA) expression).expression1);
+			elimEquivalence(((ExpA) expression).expression2);
 		}
 		return expression;
 	}
@@ -56,8 +58,8 @@ public class ClauseForm {
 				((ExpA) expression).operator = Operators.AND;
 				((ExpA) expression).expression1.reverseNegation();
 			}
-			((ExpA) expression).expression1 = elimImplication(((ExpA) expression).expression1);
-			((ExpA) expression).expression2 = elimImplication(((ExpA) expression).expression2);
+			elimImplication(((ExpA) expression).expression1);
+			elimImplication(((ExpA) expression).expression2);
 		}
 		return expression;
 	}
@@ -93,7 +95,26 @@ public class ClauseForm {
 	}
 
 	public Expression skolemize(Expression expression) {
-		return null;
+		int functionCount = 0;
+		if (expression.quantifier.type == 'E') {
+			Function f = new Function("f" + ++functionCount);
+			ArrayList<Literal> literals = expression.involvedLiterals();
+			System.out.println(literals);
+			while (!literals.isEmpty()) {
+				f.addParameter(literals.remove(0));
+			}
+			if (f.parameters.size() != 0) {
+				for (int i = 0; i < expression.quantifier.literals.length; i++) {
+					expression.replaceLiterals(expression.quantifier.literals[i], f);
+				}
+			}
+			expression.quantifier = null;
+		}
+		if (expression instanceof ExpA) {
+			skolemize(((ExpA) expression).expression1);
+			skolemize(((ExpA) expression).expression2);
+		}
+		return expression;
 	}
 
 	public Expression discardAQuantifiers(Expression expression) {
@@ -119,26 +140,32 @@ public class ClauseForm {
 	public static void main(String[] args) {
 		Function f1 = new Function("Q");
 		Function f2 = new Function("P");
-		Literal[] l = {new Literal("x")};
+		Literal[] l = { new Literal("x") };
 		f1.addParameter(l[0]);
+		f1.addParameter(new Literal("y"));
 		f2.addParameter(l[0]);
-		Quantifier q = new Quantifier('A', true, l);
-		ExpB e1 = new ExpB(null, false, f1);
-		ExpB e2 = new ExpB(null, false, f2);
-		ExpA e3 = new ExpA(null, false, e1, e2, Operators.IMPLIES);
-		ExpA e4 = new ExpA(null, false,
-				new ExpB(null, false, new Function("A")), new ExpB(null, false,
-						new Function("B")), Operators.IMPLIES);
-		ExpA exp = new ExpA(q, false, e3, e4, Operators.IMPLIES);
-		System.out.println(exp.toString());
+		Quantifier q = new Quantifier('E', false, l);
+		ExpB e1 = new ExpB(q, false, f1);
+		ExpB e2 = new ExpB(q, false, f2);
+		ExpA e3 = new ExpA(new Quantifier('A', false, l), false, e1, e2, Operators.AND);
+		//ExpA e4 = new ExpA(null, false,
+			//	new ExpB(null, false, new Function("A")), new ExpB(null, false,
+				//		new Function("B")), Operators.IMPLIES);
+		//ExpA exp = new ExpA(q, false, e3, e4, Operators.IMPLIES);
+		/*System.out.println(exp.toString());
 
-		ClauseForm cf = new ClauseForm();
+		
 		cf.elimEquivalence(exp);
 		System.out.println(exp);
 		cf.elimImplication(exp);
 		System.out.println(exp);
 		cf.pushNotInwards(exp);
-		System.out.println(exp);
+		System.out.println(exp);*/
+		ClauseForm cf = new ClauseForm();
+		System.out.println(e3);
+		cf.skolemize(e3);
+		System.out.println(e3);
+		
 	}
 
 }
