@@ -63,7 +63,29 @@ public class ClauseForm {
 	}
 
 	public Expression pushNotInwards(Expression expression) {
-		return null;
+		if (expression.quantifier != null && expression.quantifier.isNegated) {
+			expression.quantifier.reverseNegation();
+			expression.quantifier.reverseType();
+			expression.reverseNegation();
+		}
+		if (expression instanceof ExpA) {
+			if (expression.isNegated) {
+				if (((ExpA) expression).operator == Operators.AND) {
+					expression.reverseNegation();
+					((ExpA) expression).expression1.reverseNegation();
+					((ExpA) expression).expression2.reverseNegation();
+					((ExpA) expression).operator = Operators.OR;
+				} else if (((ExpA) expression).operator == Operators.OR) {
+					expression.reverseNegation();
+					((ExpA) expression).expression1.reverseNegation();
+					((ExpA) expression).expression2.reverseNegation();
+					((ExpA) expression).operator = Operators.AND;
+				}
+			}
+			pushNotInwards(((ExpA) expression).expression1);
+			pushNotInwards(((ExpA) expression).expression2);
+		}
+		return expression;
 	}
 
 	public Expression renameVariables(Expression expression) {
@@ -97,19 +119,25 @@ public class ClauseForm {
 	public static void main(String[] args) {
 		Function f1 = new Function("Q");
 		Function f2 = new Function("P");
+		Literal[] l = {new Literal("x")};
+		f1.addParameter(l[0]);
+		f2.addParameter(l[0]);
+		Quantifier q = new Quantifier('A', true, l);
 		ExpB e1 = new ExpB(null, false, f1);
 		ExpB e2 = new ExpB(null, false, f2);
 		ExpA e3 = new ExpA(null, false, e1, e2, Operators.IMPLIES);
 		ExpA e4 = new ExpA(null, false,
 				new ExpB(null, false, new Function("A")), new ExpB(null, false,
 						new Function("B")), Operators.IMPLIES);
-		ExpA exp = new ExpA(null, false, e3, e4, Operators.IMPLIES);
+		ExpA exp = new ExpA(q, false, e3, e4, Operators.IMPLIES);
 		System.out.println(exp.toString());
 
 		ClauseForm cf = new ClauseForm();
-		exp = (ExpA) cf.elimEquivalence(exp);
+		cf.elimEquivalence(exp);
 		System.out.println(exp);
 		cf.elimImplication(exp);
+		System.out.println(exp);
+		cf.pushNotInwards(exp);
 		System.out.println(exp);
 	}
 

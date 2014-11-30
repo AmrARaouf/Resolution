@@ -2,9 +2,9 @@ package expression;
 import function.Literal;
 
 public class Quantifier {
-	char type;
-	boolean isNegated;
-	Literal[] literals;
+	public char type;
+	public boolean isNegated;
+	public Literal[] literals;
 	
 	public Quantifier(char type, boolean isNegated, Literal[] literals) {
 		this.type = type;
@@ -26,6 +26,14 @@ public class Quantifier {
 
 	public void setLiterals(Literal[] literals) {
 		this.literals = literals;
+	}
+	
+	public void reverseType() {
+		type = (type == 'A')? 'E':'A';
+	}
+	
+	public void reverseNegation() {
+		isNegated = !isNegated;
 	}
 	
 	public String toString() {
