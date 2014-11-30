@@ -99,13 +99,13 @@ public class ClauseForm {
 		if (expression.quantifier.type == 'E') {
 			Function f = new Function("f" + ++functionCount);
 			ArrayList<Literal> literals = expression.involvedLiterals();
-			System.out.println(literals);
 			while (!literals.isEmpty()) {
 				f.addParameter(literals.remove(0));
 			}
 			if (f.parameters.size() != 0) {
 				for (int i = 0; i < expression.quantifier.literals.length; i++) {
-					expression.replaceLiterals(expression.quantifier.literals[i], f);
+					expression.replaceLiterals(
+							expression.quantifier.literals[i], f);
 				}
 			}
 			expression.quantifier = null;
@@ -118,11 +118,26 @@ public class ClauseForm {
 	}
 
 	public Expression discardAQuantifiers(Expression expression) {
-		return null;
+		if (expression.quantifier != null && expression.quantifier.type == 'A') {
+			expression.quantifier = null;
+		}
+		if (expression instanceof ExpA) {
+			discardAQuantifiers(((ExpA) expression).expression1);
+			discardAQuantifiers(((ExpA) expression).expression2);
+		}
+		return expression;
 	}
 
 	public Expression toCNF(Expression expression) {
-		return null;
+		if (expression instanceof ExpA) {
+			if (((ExpA) expression).expression1 instanceof ExpB
+					&& ((ExpA) expression).expression2 instanceof ExpA) {
+				if (((ExpA) expression).operator == Operators.AND) {
+					// unfinished
+				}
+			}
+		}
+		return expression;
 	}
 
 	public String flatten(Expression expression) {
@@ -147,25 +162,26 @@ public class ClauseForm {
 		Quantifier q = new Quantifier('E', false, l);
 		ExpB e1 = new ExpB(q, false, f1);
 		ExpB e2 = new ExpB(q, false, f2);
-		ExpA e3 = new ExpA(new Quantifier('A', false, l), false, e1, e2, Operators.AND);
-		//ExpA e4 = new ExpA(null, false,
-			//	new ExpB(null, false, new Function("A")), new ExpB(null, false,
-				//		new Function("B")), Operators.IMPLIES);
-		//ExpA exp = new ExpA(q, false, e3, e4, Operators.IMPLIES);
-		/*System.out.println(exp.toString());
-
-		
-		cf.elimEquivalence(exp);
-		System.out.println(exp);
-		cf.elimImplication(exp);
-		System.out.println(exp);
-		cf.pushNotInwards(exp);
-		System.out.println(exp);*/
+		ExpA e3 = new ExpA(new Quantifier('A', false, l), false, e1, e2,
+				Operators.AND);
+		// ExpA e4 = new ExpA(null, false,
+		// new ExpB(null, false, new Function("A")), new ExpB(null, false,
+		// new Function("B")), Operators.IMPLIES);
+		// ExpA exp = new ExpA(q, false, e3, e4, Operators.IMPLIES);
+		/*
+		 * System.out.println(exp.toString());
+		 * 
+		 * 
+		 * cf.elimEquivalence(exp); System.out.println(exp);
+		 * cf.elimImplication(exp); System.out.println(exp);
+		 * cf.pushNotInwards(exp); System.out.println(exp);
+		 */
 		ClauseForm cf = new ClauseForm();
 		System.out.println(e3);
 		cf.skolemize(e3);
 		System.out.println(e3);
-		
+		cf.discardAQuantifiers(e3);
+		System.out.println(e3);
 	}
 
 }
