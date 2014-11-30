@@ -103,9 +103,9 @@ public class ClauseForm {
 				f.addParameter(literals.remove(0));
 			}
 			if (f.parameters.size() != 0) {
-				for (int i = 0; i < expression.quantifier.literals.length; i++) {
+				for (int i = 0; i < expression.quantifier.literals.size(); i++) {
 					expression.replaceLiterals(
-							expression.quantifier.literals[i], f);
+							expression.quantifier.literals.get(i), f);
 				}
 			}
 			expression.quantifier = null;
@@ -155,10 +155,11 @@ public class ClauseForm {
 	public static void main(String[] args) {
 		Function f1 = new Function("Q");
 		Function f2 = new Function("P");
-		Literal[] l = { new Literal("x") };
-		f1.addParameter(l[0]);
+		ArrayList<Literal> l = new ArrayList<>();
+		l.add(new Literal("x"));
+		f1.addParameter(l.get(0));
 		f1.addParameter(new Literal("y"));
-		f2.addParameter(l[0]);
+		f2.addParameter(l.get(0));
 		Quantifier q = new Quantifier('E', false, l);
 		ExpB e1 = new ExpB(q, false, f1);
 		ExpB e2 = new ExpB(q, false, f2);

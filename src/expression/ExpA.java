@@ -58,7 +58,7 @@ public class ExpA extends Expression {
 	}
 	
 	public static void main(String[] args) {
-		Literal[] l = new Literal[1];
+		/*Literal[] l = new Literal[1];
 		l[0] = new Literal("a");
 		Quantifier q = new Quantifier('A', true, l);
 		Quantifier q2 = new Quantifier('E', false, l);
@@ -69,6 +69,6 @@ public class ExpA extends Expression {
 		function2.addParameter(new Literal("a"));
 		ExpB e2 = new ExpB(q2, false, function2);
 		ExpA e = new ExpA(q, false, e1, e2, Operators.EQUIVILANT);
-		System.out.println(e.toString());
+		System.out.println(e.toString());*/
 	}
 }
