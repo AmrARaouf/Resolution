@@ -323,12 +323,12 @@ public class ClauseForm {
 	}
 
 	public String renameClauseVariables(String expression) {
-		return null;
+		return expression;
 	}
 
 	public static void main(String[] args) {
 		String s = "∀x[P(x)∨∃x[Q(x)⇒¬P(x)]]";
-		ClauseForm cf = new ClauseForm();
+		ClauseForm cf = new ClauseForm(true);
 		Expression e3 = cf.toExpression(s);
 		System.out.println(e3);
 		cf.elimEquivalence(e3);
