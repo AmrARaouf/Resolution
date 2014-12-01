@@ -53,10 +53,12 @@ public abstract class Expression {
 			start = index + 1;
 			end--;
 		}
+		//System.out.println("Start: " + start);
+		//System.out.println("End: " + end);
 		if (isNot(expr.charAt(start))) {
 			isNegated = true;
 			start++;
-			if (expr.charAt(start + 1) == '(' || expr.charAt(start + 1) == '[') {
+			if (expr.charAt(start) == '(' || expr.charAt(start) == '[') {
 				start++;
 				end--;
 			} else {

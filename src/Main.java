@@ -1,3 +1,4 @@
+import clauseForm.ClauseForm;
 import unification.Unification;
 import expression.Expression;
 import function.Var;
@@ -20,8 +21,9 @@ public class Main {
 		u.unify("f(x,g(x),x)", "f(g(u),g(g(z)),z)");
 		System.out.println("===================================================");
 		//String s = "∃x[P(x)∧∀x[Q(x)⇒¬P(x)]]";
-		String s = "∀x[P(x)⇔(Q(x)∧∃y[Q(y)∧R(y,x)])]";
-		Expression e = Expression.parse(s);
+		String s = "∀x[(¬P(x)∨(Q(x)∧∃y[Q(y)∧R(y,x)]))∧((¬Q(x)∨∀y[(¬Q(y))∨(¬R(y,x))])∨P(x))]";//"∀x[P(x)⇔(Q(x)∧∃y[Q(y)∧R(y,x)])]";
+		ClauseForm cf = new ClauseForm();
+		Expression e = cf.renameVariables(Expression.parse(s.replaceAll(" ", "")));
 		System.out.println(e.toString());
 	}
 

@@ -1,8 +1,14 @@
 package clauseForm;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 
-import expression.*;
+import expression.ExpA;
+import expression.ExpB;
+import expression.Expression;
+import expression.Operators;
+import expression.Quantifier;
 import function.Function;
 import function.Literal;
 
@@ -90,7 +96,83 @@ public class ClauseForm {
 	}
 
 	public Expression renameVariables(Expression expression) {
-		return null;
+		LinkedList<String> av = getAvailableNames(expression);
+		changeDescent(expression, new HashSet<String>(), av);
+		return expression;
+	}
+	
+	private void changeDescent(Expression expression, HashSet<String> used, LinkedList<String> av) {
+		if (expression.quantifier != null) {
+			for (int i = 0;i < expression.quantifier.literals.size(); i++) {
+				if (used.contains(expression.quantifier.literals.get(i).name)) {
+					String rep = av.removeFirst();
+					renameAll(expression, expression.quantifier.literals.get(i).name, rep);
+					used.add(rep);
+				} else {
+					used.add(expression.quantifier.literals.get(i).name);
+				}
+			}
+		}
+		if (expression instanceof ExpA) {
+			changeDescent(((ExpA) expression).expression1, used, av);
+			changeDescent(((ExpA) expression).expression2, used, av);
+		}
+	}
+	
+	private void renameAll(Expression expr, String old, String rep) {
+		/*System.out.println(expr);
+		System.out.println(old);
+		System.out.println(rep);*/
+		if (expr.quantifier != null) {
+			for (int i = 0;i < expr.quantifier.literals.size(); i++) {
+				if (expr.quantifier.literals.get(i).name.equals(old)) {
+					expr.quantifier.literals.get(i).name = rep;
+				}
+			}
+		}
+		if (expr instanceof ExpA) {
+			renameAll(((ExpA) expr).expression1, old, rep);
+			renameAll(((ExpA) expr).expression2, old, rep);
+		} else {
+			Function f = ((ExpB) expr).getFunction();
+			renameFunctionLiterals(f, old, rep);
+		}
+	}
+
+	private void renameFunctionLiterals(Function f, String old, String rep) {
+		for (int i = 0; i < f.getArity(); i++) {
+			if (f.getParameter(i) instanceof Literal) {
+				if (((Literal)(f.getParameter(i))).name.equals(old)) {
+					((Literal)(f.getParameter(i))).name = rep;
+				}
+			} else {
+				renameFunctionLiterals((Function)f.getParameter(i), old, rep);
+			}
+		}
+	}
+
+	private LinkedList<String> getAvailableNames(Expression expr) {
+		LinkedList<String> al = new LinkedList<>();
+		for (int i = 0; i < 26; i++) {
+			if (!isUsed(expr, (char)('a' + i)+"")) {
+				al.add((char)('a' + i)+"");
+			}
+		}
+		return al;
+	}
+
+	private boolean isUsed(Expression expr, String s) {
+		if (expr.quantifier != null) {
+			for (int i = 0;i < expr.quantifier.literals.size(); i++) {
+				if (s.equals(expr.quantifier.literals.get(i).name))
+					return true;
+			}
+		}
+		if (expr instanceof ExpA) {
+			return isUsed(((ExpA) expr).expression1, s) || isUsed(((ExpA) expr).expression2, s);
+		} else {
+			return false;
+		}
 	}
 
 	public Expression skolemize(Expression expression) {
