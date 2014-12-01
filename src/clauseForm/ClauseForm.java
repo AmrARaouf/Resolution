@@ -13,8 +13,7 @@ public class ClauseForm {
 	}
 
 	public Expression toExpression(String s) {
-		// TODO: string to expression
-		return null;
+		return Expression.parse(s);
 	}
 
 	public String findClauseForm(String s) {
@@ -96,7 +95,7 @@ public class ClauseForm {
 
 	public Expression skolemize(Expression expression) {
 		int functionCount = 0;
-		if (expression.quantifier.type == 'E') {
+		if (expression.quantifier != null && expression.quantifier.type == 'E') {
 			Function f = new Function("f" + ++functionCount);
 			ArrayList<Literal> literals = expression.involvedLiterals();
 			while (!literals.isEmpty()) {
@@ -132,10 +131,43 @@ public class ClauseForm {
 		if (expression instanceof ExpA) {
 			if (((ExpA) expression).expression1 instanceof ExpB
 					&& ((ExpA) expression).expression2 instanceof ExpA) {
-				if (((ExpA) expression).operator == Operators.AND) {
-					// unfinished
+				if (((ExpA) expression).operator != ((ExpA) expression).operator) {
+					ExpA e1 = new ExpA(
+							null,
+							false,
+							((ExpA) expression).expression1,
+							((ExpA) ((ExpA) expression).expression2).expression1,
+							((ExpA) expression).operator);
+					ExpA e2 = new ExpA(
+							null,
+							false,
+							((ExpA) expression).expression1,
+							((ExpA) ((ExpA) expression).expression2).expression2,
+							((ExpA) expression).operator);
+					expression = new ExpA(null, false, e1, e2,
+							((ExpA) ((ExpA) expression).expression2).operator);
+				}
+			} else if (((ExpA) expression).expression2 instanceof ExpB
+					&& ((ExpA) expression).expression1 instanceof ExpA) {
+				if (((ExpA) expression).operator != ((ExpA) expression).operator) {
+					ExpA e1 = new ExpA(
+							null,
+							false,
+							((ExpA) expression).expression2,
+							((ExpA) ((ExpA) expression).expression1).expression1,
+							((ExpA) expression).operator);
+					ExpA e2 = new ExpA(
+							null,
+							false,
+							((ExpA) expression).expression2,
+							((ExpA) ((ExpA) expression).expression1).expression2,
+							((ExpA) expression).operator);
+					expression = new ExpA(null, false, e1, e2,
+							((ExpA) ((ExpA) expression).expression1).operator);
 				}
 			}
+			toCNF(((ExpA) expression).expression1);
+			toCNF(((ExpA) expression).expression2);
 		}
 		return expression;
 	}
@@ -153,31 +185,15 @@ public class ClauseForm {
 	}
 
 	public static void main(String[] args) {
-		Function f1 = new Function("Q");
-		Function f2 = new Function("P");
-		ArrayList<Literal> l = new ArrayList<>();
-		l.add(new Literal("x"));
-		f1.addParameter(l.get(0));
-		f1.addParameter(new Literal("y"));
-		f2.addParameter(l.get(0));
-		Quantifier q = new Quantifier('E', false, l);
-		ExpB e1 = new ExpB(q, false, f1);
-		ExpB e2 = new ExpB(q, false, f2);
-		ExpA e3 = new ExpA(new Quantifier('A', false, l), false, e1, e2,
-				Operators.AND);
-		// ExpA e4 = new ExpA(null, false,
-		// new ExpB(null, false, new Function("A")), new ExpB(null, false,
-		// new Function("B")), Operators.IMPLIES);
-		// ExpA exp = new ExpA(q, false, e3, e4, Operators.IMPLIES);
-		/*
-		 * System.out.println(exp.toString());
-		 * 
-		 * 
-		 * cf.elimEquivalence(exp); System.out.println(exp);
-		 * cf.elimImplication(exp); System.out.println(exp);
-		 * cf.pushNotInwards(exp); System.out.println(exp);
-		 */
+		String s = "∀x[P(x)∨∃x[Q(x)⇒¬P(x)]]";
 		ClauseForm cf = new ClauseForm();
+		Expression e3 = cf.toExpression(s);
+		System.out.println(e3);
+		cf.elimEquivalence(e3);
+		System.out.println(e3);
+		cf.elimImplication(e3);
+		System.out.println(e3);
+		cf.pushNotInwards(e3);
 		System.out.println(e3);
 		cf.skolemize(e3);
 		System.out.println(e3);
