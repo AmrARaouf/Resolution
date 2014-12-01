@@ -213,7 +213,8 @@ public class ClauseForm {
 		if (expression instanceof ExpA) {
 			if (((ExpA) expression).expression1 instanceof ExpB
 					&& ((ExpA) expression).expression2 instanceof ExpA) {
-				if (((ExpA) expression).operator != ((ExpA) expression).operator) {
+				if (((ExpA) expression).operator != ((ExpA)((ExpA) expression).expression2).operator) {
+					System.out.println("here");
 					ExpA e1 = new ExpA(
 							null,
 							false,
@@ -231,7 +232,7 @@ public class ClauseForm {
 				}
 			} else if (((ExpA) expression).expression2 instanceof ExpB
 					&& ((ExpA) expression).expression1 instanceof ExpA) {
-				if (((ExpA) expression).operator != ((ExpA) expression).operator) {
+				if (((ExpA) expression).operator != ((ExpA)((ExpA) expression).expression2).operator) {
 					ExpA e1 = new ExpA(
 							null,
 							false,
@@ -281,6 +282,8 @@ public class ClauseForm {
 		System.out.println(e3);
 		cf.discardAQuantifiers(e3);
 		System.out.println(e3);
+		Expression e = cf.toCNF(e3);
+		System.out.println(e);
 	}
 
 }
