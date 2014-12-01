@@ -26,6 +26,7 @@ public class Function extends Var {
 	
 	public String toString() {
 		String s = name;
+		//System.out.println("Func: " + name);
 		s += "(";
 		for (int i = 0; i < parameters.size(); i++) {
 			s += parameters.get(i).toString();
