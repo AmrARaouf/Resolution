@@ -3,6 +3,9 @@ package clauseForm;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+import sun.util.locale.StringTokenIterator;
 
 import expression.ExpA;
 import expression.ExpB;
@@ -13,9 +16,11 @@ import function.Function;
 import function.Literal;
 
 public class ClauseForm {
+	
+	boolean trace;
 
-	public ClauseForm() {
-
+	public ClauseForm(boolean trace) {
+		this.trace = trace;
 	}
 
 	public Expression toExpression(String s) {
@@ -23,16 +28,43 @@ public class ClauseForm {
 	}
 
 	public String findClauseForm(String s) {
+		System.out.println("Input expression:\n" + s);
 		Expression expression = toExpression(s);
-		elimEquivalence(expression);
-		elimImplication(expression);
-		pushNotInwards(expression);
-		renameVariables(expression);
-		skolemize(expression);
-		discardAQuantifiers(expression);
-		toCNF(expression);
+		expression = elimEquivalence(expression);
+		if (trace)
+			System.out.println("Step 1 - Eliminate Equivilence:\n" + expression.toString());
+		expression = elimImplication(expression);
+		if (trace)
+			System.out.println("Step 2 - Eliminate Implications:\n" + expression.toString());
+		expression = pushNotInwards(expression);
+		if (trace)
+			System.out.println("Step 3 - Push NOT operators in:\n" + expression.toString());
+		expression = renameVariables(expression);
+		if (trace)
+			System.out.println("Step 4 - Standardize:\n" + expression.toString());
+		expression = skolemize(expression);
+		if (trace)
+			System.out.println("Step 5 - Skolemize:\n" + expression.toString());
+		expression = discardAQuantifiers(expression);
+		if (trace)
+			System.out.println("Step 6 - Discard FOR ALL quantifiers:\n" + expression.toString());
+		expression = toCNF(expression);
+		if (trace)
+			System.out.println("Step 7 - To CNF:\n" + expression.toString());
 		String res = flatten(expression);
+		if (trace)
+			System.out.println("Step 8 - Flatten expression from brackets:\n" + res);
+		res = toClause(res);
+		if (trace)
+			System.out.println("Step 9 - Convert to clauses:\n" + res);
 		res = toSetOfClause(res);
+		if (trace)
+			System.out.println("Step 10 - Convert to set of clauses:\n" + res);
+		res = renameClauseVariables(res);
+		if (trace)
+			System.out.println("Step 11 - Standardize between clauses:\n" + res);
+		else
+			System.out.println("Clause Form:\n" + res);
 		return renameClauseVariables(res);
 	}
 
@@ -256,11 +288,38 @@ public class ClauseForm {
 	}
 
 	public String flatten(Expression expression) {
-		return null;
+		String unbracketedExp = flattenHelper(expression);
+		StringTokenizer st = new StringTokenizer(unbracketedExp,"AND");
+		String s = "";
+		while (st.hasMoreTokens()) {
+			if (st.countTokens() > 1) {
+				s += "(" + st.nextToken() + ") " + (char)8743 + " ";
+			} else {
+				s += "(" + st.nextToken() + ")";
+			}
+		}
+		return s;
+	}
+	
+	private String flattenHelper(Expression expression) {
+		if (expression instanceof ExpA) {
+			String operator = (((ExpA) expression).operator == Operators.AND)? "AND" : (char)8744 + "";
+			return flatten(((ExpA) expression).expression1) + operator + flatten(((ExpA) expression).expression2);
+		} else if (expression instanceof ExpB) {
+			return expression.toString();
+		} else {
+			return "";
+		}
+	}
+	
+	public String toClause(String expression) {
+		String s = expression.replace("(","{");
+		s = s.replace(")", "}");
+		return s.replaceAll(" "+ (char)8744, ",");
 	}
 
 	public String toSetOfClause(String expression) {
-		return null;
+		return "{" + expression.replaceAll(" "+ (char)8743, ",") + "}";
 	}
 
 	public String renameClauseVariables(String expression) {
