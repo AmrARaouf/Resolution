@@ -22,7 +22,7 @@ public class Main {
 		System.out.println("===================================================");
 		//String s = "∃x[P(x)∧∀x[Q(x)⇒¬P(x)]]";
 		String s = "∀x[(¬P(x)∨(Q(x)∧∃y[Q(y)∧R(y,x)]))∧((¬Q(x)∨∀y[(¬Q(y))∨(¬R(y,x))])∨P(x))]";//"∀x[P(x)⇔(Q(x)∧∃y[Q(y)∧R(y,x)])]";
-		ClauseForm cf = new ClauseForm();
+		ClauseForm cf = new ClauseForm(true);
 		Expression e = cf.renameVariables(Expression.parse(s.replaceAll(" ", "")));
 		System.out.println(e.toString());
 	}

@@ -23,9 +23,8 @@ public class ExpB extends Expression {
 		String s = "";
 		if (quantifier != null)
 			s += quantifier.toString() + ".";
-		s += (isNegated)? (char)172 + "(" : "";
+		s += (isNegated)? (char)172 : "";
 		s += function.toString();
-		s += (isNegated)? ")" : "";
 		return s;
 	}
 	

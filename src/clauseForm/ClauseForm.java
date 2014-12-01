@@ -28,43 +28,43 @@ public class ClauseForm {
 	}
 
 	public String findClauseForm(String s) {
-		System.out.println("Input expression:\n" + s);
+		System.out.println("Input expression:\n" + s + "\n");
 		Expression expression = toExpression(s);
 		expression = elimEquivalence(expression);
 		if (trace)
-			System.out.println("Step 1 - Eliminate Equivilence:\n" + expression.toString());
+			System.out.println("Step 1 - Eliminate Equivilence:\n" + expression.toString() + "\n");
 		expression = elimImplication(expression);
 		if (trace)
-			System.out.println("Step 2 - Eliminate Implications:\n" + expression.toString());
+			System.out.println("Step 2 - Eliminate Implications:\n" + expression.toString() + "\n");
 		expression = pushNotInwards(expression);
 		if (trace)
-			System.out.println("Step 3 - Push NOT operators in:\n" + expression.toString());
+			System.out.println("Step 3 - Push NOT operators in:\n" + expression.toString() + "\n");
 		expression = renameVariables(expression);
 		if (trace)
-			System.out.println("Step 4 - Standardize:\n" + expression.toString());
+			System.out.println("Step 4 - Standardize:\n" + expression.toString() + "\n");
 		expression = skolemize(expression);
 		if (trace)
-			System.out.println("Step 5 - Skolemize:\n" + expression.toString());
+			System.out.println("Step 5 - Skolemize:\n" + expression.toString() + "\n");
 		expression = discardAQuantifiers(expression);
 		if (trace)
-			System.out.println("Step 6 - Discard FOR ALL quantifiers:\n" + expression.toString());
+			System.out.println("Step 6 - Discard FOR ALL quantifiers:\n" + expression.toString() + "\n");
 		expression = toCNF(expression);
 		if (trace)
-			System.out.println("Step 7 - To CNF:\n" + expression.toString());
+			System.out.println("Step 7 - To CNF:\n" + expression.toString() + "\n");
 		String res = flatten(expression);
 		if (trace)
-			System.out.println("Step 8 - Flatten expression from brackets:\n" + res);
+			System.out.println("Step 8 - Flatten expression from brackets:\n" + res + "\n");
 		res = toClause(res);
 		if (trace)
-			System.out.println("Step 9 - Convert to clauses:\n" + res);
+			System.out.println("Step 9 - Convert to clauses:\n" + res + "\n");
 		res = toSetOfClause(res);
 		if (trace)
-			System.out.println("Step 10 - Convert to set of clauses:\n" + res);
+			System.out.println("Step 10 - Convert to set of clauses:\n" + res + "\n");
 		res = renameClauseVariables(res);
 		if (trace)
-			System.out.println("Step 11 - Standardize between clauses:\n" + res);
+			System.out.println("Step 11 - Standardize between clauses:\n" + res + "\n");
 		else
-			System.out.println("Clause Form:\n" + res);
+			System.out.println("Clause Form:\n" + res + "\n");
 		return renameClauseVariables(res);
 	}
 
@@ -246,7 +246,6 @@ public class ClauseForm {
 			if (((ExpA) expression).expression1 instanceof ExpB
 					&& ((ExpA) expression).expression2 instanceof ExpA) {
 				if (((ExpA) expression).operator != ((ExpA)((ExpA) expression).expression2).operator) {
-					System.out.println("here");
 					ExpA e1 = new ExpA(
 							null,
 							false,
@@ -304,7 +303,7 @@ public class ClauseForm {
 	private String flattenHelper(Expression expression) {
 		if (expression instanceof ExpA) {
 			String operator = (((ExpA) expression).operator == Operators.AND)? "AND" : (char)8744 + "";
-			return flatten(((ExpA) expression).expression1) + operator + flatten(((ExpA) expression).expression2);
+			return flattenHelper(((ExpA) expression).expression1) + operator + flattenHelper(((ExpA) expression).expression2);
 		} else if (expression instanceof ExpB) {
 			return expression.toString();
 		} else {
@@ -313,9 +312,9 @@ public class ClauseForm {
 	}
 	
 	public String toClause(String expression) {
-		String s = expression.replace("(","{");
-		s = s.replace(")", "}");
-		return s.replaceAll(" "+ (char)8744, ",");
+		String s = "{" + expression.substring(1, expression.length() - 1) + "}";
+		s = s.replaceAll("\\) " + (char)8743 + " \\(","} " + (char)8743 + " {");
+		return s.replaceAll("" + (char)8744, ",");
 	}
 
 	public String toSetOfClause(String expression) {
@@ -329,20 +328,7 @@ public class ClauseForm {
 	public static void main(String[] args) {
 		String s = "∀x[P(x)∨∃x[Q(x)⇒¬P(x)]]";
 		ClauseForm cf = new ClauseForm(true);
-		Expression e3 = cf.toExpression(s);
-		System.out.println(e3);
-		cf.elimEquivalence(e3);
-		System.out.println(e3);
-		cf.elimImplication(e3);
-		System.out.println(e3);
-		cf.pushNotInwards(e3);
-		System.out.println(e3);
-		cf.skolemize(e3);
-		System.out.println(e3);
-		cf.discardAQuantifiers(e3);
-		System.out.println(e3);
-		Expression e = cf.toCNF(e3);
-		System.out.println(e);
+		cf.findClauseForm(s);
 	}
 
 }
